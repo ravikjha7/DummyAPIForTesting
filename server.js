@@ -2,17 +2,27 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 8080;
 
-const employeeRoutes = require('./routes/employee.routes');
+const sendEmail = require('./email');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/employee', employeeRoutes);
+app.post('/sendEmail', (req, res) => {
+    
+    try {
+        
+        const { email, subject, message } = req.body;
+        sendEmail(email, subject, message);
 
-app.use('/greeting', (req, res) => {
-    res.status(200).send("Hello world!");
-}) 
+        res.status(200).json("Email Sent Successfully !!!");
 
+    } catch (error) {
+        
+        res.status(400).json("Error !!!");
+
+    }
+
+})
 
 
 app.listen(port, () => {
